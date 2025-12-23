@@ -1,0 +1,234 @@
+-- XSN UI Hub with Intro + Minimize Circle
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- ScreenGui
+local gui = Instance.new("ScreenGui")
+gui.Name = "XSN_GUI"
+gui.ResetOnSpawn = false
+gui.Parent = game.CoreGui
+
+----------------------------
+-- INTRO
+----------------------------
+local introFrame = Instance.new("Frame", gui)
+introFrame.Size = UDim2.fromScale(1,1)
+introFrame.BackgroundColor3 = Color3.fromRGB(10,10,10)
+
+-- Lightning bolt
+local bolt = Instance.new("TextLabel", introFrame)
+bolt.Size = UDim2.fromScale(0.2,0.4)
+bolt.Position = UDim2.fromScale(-0.3,0.3)
+bolt.BackgroundTransparency = 1
+bolt.Text = "⚡"
+bolt.TextScaled = true
+bolt.TextColor3 = Color3.fromRGB(255,255,255)
+bolt.Font = Enum.Font.GothamBlack
+bolt.ZIndex = 2
+
+-- Letters SN behind bolt
+local logo = Instance.new("TextLabel", introFrame)
+logo.Size = UDim2.fromScale(0.3,0.2)
+logo.Position = UDim2.fromScale(0.35,0.4)
+logo.BackgroundTransparency = 1
+logo.Text = "SN"
+logo.TextScaled = true
+logo.TextTransparency = 1
+logo.TextColor3 = Color3.fromRGB(255,255,255)
+logo.Font = Enum.Font.GothamBlack
+logo.ZIndex = 1
+
+-- Bolt animation
+TweenService:Create(bolt,TweenInfo.new(2.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Position=UDim2.fromScale(1.3,0.3)}):Play()
+TweenService:Create(logo,TweenInfo.new(2.5),{TextTransparency=0}):Play()
+task.wait(2.6)
+
+-- Blue X drop
+local xLetter = Instance.new("TextLabel", introFrame)
+xLetter.Size = UDim2.fromScale(0.1,0.2)
+xLetter.Position = UDim2.fromScale(0.35,-0.3)
+xLetter.BackgroundTransparency = 1
+xLetter.Text = "X"
+xLetter.TextScaled = true
+xLetter.TextColor3 = Color3.fromRGB(0,170,255)
+xLetter.Font = Enum.Font.GothamBlack
+xLetter.ZIndex = 3
+local xStroke = Instance.new("UIStroke", xLetter)
+xStroke.Color = Color3.fromRGB(0,170,255)
+xStroke.Thickness = 2
+xStroke.Transparency = 0.5
+TweenService:Create(xLetter,TweenInfo.new(0.7,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Position=UDim2.fromScale(0.35,0.4)}):Play()
+task.wait(1.2)
+TweenService:Create(introFrame,TweenInfo.new(0.5),{BackgroundTransparency=1}):Play()
+task.wait(0.5)
+introFrame:Destroy()
+
+----------------------------
+-- MAIN XSN UI
+----------------------------
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.fromScale(0.55,0.65)
+main.Position = UDim2.fromScale(0.225,0.175)
+main.BackgroundColor3 = Color3.fromRGB(25,25,25)
+main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
+Instance.new("UICorner", main).CornerRadius = UDim.new(0,16)
+
+-- Gradient
+local gradient = Instance.new("UIGradient", main)
+gradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0,Color3.fromRGB(25,25,25)),ColorSequenceKeypoint.new(1,Color3.fromRGB(50,50,50))}
+
+-- Top bar with title & player info
+local top = Instance.new("Frame", main)
+top.Size = UDim2.fromScale(1,0.12)
+top.BackgroundTransparency = 0
+top.BackgroundColor3 = Color3.fromRGB(35,35,35)
+Instance.new("UICorner", top).CornerRadius = UDim.new(0,16)
+
+local title = Instance.new("TextLabel", top)
+title.Size = UDim2.fromScale(0.6,1)
+title.Position = UDim2.fromScale(0,0)
+title.BackgroundTransparency = 1
+title.Text = "XSN  |  Xeno Style UI"
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.Font = Enum.Font.GothamBold
+title.TextScaled = true
+
+-- Player head and name
+local headFrame = Instance.new("Frame", top)
+headFrame.Size = UDim2.fromScale(0.4,1)
+headFrame.Position = UDim2.fromScale(0.6,0)
+headFrame.BackgroundTransparency = 1
+
+local avatar = Instance.new("ImageLabel", headFrame)
+avatar.Size = UDim2.fromScale(0.25,0.8)
+avatar.Position = UDim2.fromScale(0.05,0.1)
+avatar.BackgroundTransparency = 1
+avatar.Image = Players:GetUserThumbnailAsync(LocalPlayer.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size420x420)
+
+local nameLabel = Instance.new("TextLabel", headFrame)
+nameLabel.Size = UDim2.fromScale(0.6,1)
+nameLabel.Position = UDim2.fromScale(0.35,0)
+nameLabel.BackgroundTransparency = 1
+nameLabel.Text = LocalPlayer.Name
+nameLabel.TextColor3 = Color3.fromRGB(255,255,255)
+nameLabel.Font = Enum.Font.GothamBold
+nameLabel.TextScaled = true
+
+-- Side buttons panel
+local sidePanel = Instance.new("Frame", main)
+sidePanel.Size = UDim2.fromScale(0.18,0.88)
+sidePanel.Position = UDim2.fromScale(0,0.12)
+sidePanel.BackgroundColor3 = Color3.fromRGB(35,35,35)
+Instance.new("UICorner", sidePanel).CornerRadius = UDim.new(0,12)
+
+local content = Instance.new("Frame", main)
+content.Position = UDim2.fromScale(0.18,0.12)
+content.Size = UDim2.fromScale(0.82,0.88)
+content.BackgroundTransparency = 1
+
+-- Button creator
+local function makeButton(text, yPos, parent, callback)
+	local btn = Instance.new("TextButton", parent)
+	btn.Size = UDim2.fromScale(0.9,0.1)
+	btn.Position = UDim2.fromScale(0.05,yPos)
+	btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+	btn.Text = text
+	btn.TextColor3 = Color3.fromRGB(255,255,255)
+	btn.Font = Enum.Font.Gotham
+	btn.TextScaled = true
+	btn.AutoButtonColor = false
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
+
+	btn.MouseButton1Click:Connect(callback)
+
+	btn.MouseEnter:Connect(function()
+		TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundColor3=Color3.fromRGB(70,70,70)}):Play()
+	end)
+	btn.MouseLeave:Connect(function()
+		TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundColor3=Color3.fromRGB(50,50,50)}):Play()
+	end)
+end
+
+-- Side panel buttons
+makeButton("Player",0.05,sidePanel,function() print("Player tab") end)
+makeButton("Visual",0.18,sidePanel,function() print("Visual tab") end)
+makeButton("Color",0.31,sidePanel,function()
+	local newColor1 = Color3.fromHSV(math.random(),1,1)
+	local newColor2 = Color3.fromHSV(math.random(),1,1)
+	gradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0,newColor1),ColorSequenceKeypoint.new(1,newColor2)}
+end)
+
+-- Minimize / Close functionality
+local miniCircle = Instance.new("Frame", gui)
+miniCircle.Size = UDim2.fromScale(0.08,0.08)
+miniCircle.Position = UDim2.fromScale(0.9,0.85)
+miniCircle.BackgroundColor3 = Color3.fromRGB(35,35,35)
+miniCircle.Visible = false
+miniCircle.ZIndex = 5
+Instance.new("UICorner", miniCircle).CornerRadius = UDim.new(1,0)
+
+local miniAvatar = Instance.new("ImageLabel", miniCircle)
+miniAvatar.Size = UDim2.fromScale(1,1)
+miniAvatar.Position = UDim2.fromScale(0,0)
+miniAvatar.BackgroundTransparency = 1
+miniAvatar.Image = avatar.Image
+
+-- Close button
+makeButton("Close",0.9,sidePanel,function()
+	TweenService:Create(main,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+		{Position=UDim2.fromScale(0.9,0.85),Size=UDim2.fromScale(0.08,0.08)}):Play()
+	task.wait(0.5)
+	main.Visible = false
+	miniCircle.Visible = true
+end)
+
+-- Clicking mini circle restores main UI
+miniCircle.MouseButton1Click:Connect(function()
+	miniCircle.Visible = false
+	main.Visible = true
+	TweenService:Create(main,TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+		{Position=UDim2.fromScale(0.225,0.175),Size=UDim2.fromScale(0.55,0.65)}):Play()
+end)
+
+-- Content buttons
+local function makeContentButton(text, yPos, callback)
+	local btn = Instance.new("TextButton", content)
+	btn.Size = UDim2.fromScale(0.9,0.12)
+	btn.Position = UDim2.fromScale(0.05,yPos)
+	btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	btn.Text = text
+	btn.TextColor3 = Color3.fromRGB(255,255,255)
+	btn.Font = Enum.Font.Gotham
+	btn.TextScaled = true
+	btn.AutoButtonColor = false
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
+
+	btn.MouseButton1Click:Connect(callback)
+
+	btn.MouseEnter:Connect(function()
+		TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundColor3=Color3.fromRGB(60,60,60)}):Play()
+	end)
+	btn.MouseLeave:Connect(function()
+		TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundColor3=Color3.fromRGB(40,40,40)}):Play()
+	end)
+end
+
+makeContentButton("Example Speed Boost",0.05,function()
+	if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+		LocalPlayer.Character.Humanoid.WalkSpeed = 30
+	end
+end)
+makeContentButton("Example Jump Boost",0.2,function()
+	if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+		LocalPlayer.Character.Humanoid.JumpPower = 80
+	end
+end)
+makeContentButton("Reset Stats",0.35,function()
+	if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+		LocalPlayer.Character.Humanoid.WalkSpeed = 16
+		LocalPlayer.Character.Humanoid.JumpPower = 50
+	end
+end)
